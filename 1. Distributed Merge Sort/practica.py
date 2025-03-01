@@ -3,59 +3,51 @@ import random
 arr = []
 
 
-for i in range(0, 8):
+for i in range(0, 16):
     arr.append(random.randint(0, 1000))
 
-print(arr)
+print(f'ARRAY INICIAL: {arr}')
 
 
 def mergeSort(arr):
     if len(arr) == 1:
         return arr
     
+    # divide
     arr1 = arr[: len(arr) // 2]
     arr2 = arr[len(arr) // 2:]
-    print(arr1)
-    print(arr2)
-    arr1 = mergeSort(arr1)
-    arr2 = mergeSort(arr2)    
 
-    if arr1 is not None and arr2 is not None:
-        sortedSubArr = []
-        lenArr1 = len(arr1)
-        lenArr2 = len(arr2)
+    # recursion
+    mergeSort(arr1)
+    mergeSort(arr2)
+    print(f'Arrays a ordenar: {arr1} - {arr2}')
 
-        for i in range(0, max(lenArr1, lenArr2)):
-            if arr1[i] > arr2[i]:
-                sortedSubArr.append(arr2[i])
-                arr2.remove(arr2[i])
-            else:
-                sortedSubArr.append(arr1[i])
-                arr1.remove(arr1[i])
-        print(f'-------------------- {sortedSubArr}')
-        
+    # # merge 
+    i = 0 # left arr index
+    j = 0 # right arr index 
+    k = 0 # merged arr index
 
-
-    # sortedSubArr = []
-    # print('Merge Arrays -----------')
-    # print(arr1)
-    # print(arr2)
+    while i < len(arr1) and j < len(arr2):
+        if arr1[i] < arr2[j]:
+            arr[k] = arr1[i]
+            i += 1
+        else:
+            arr[k] = arr2[j]
+            j += 1
+        k += 1
     
-    # if arr1[0] > arr2[0]:
-    #     sortedSubArr.append(arr2[0])
-    #     arr2.remove(arr2[0])
-    # else:
-    #     sortedSubArr.append(arr1[0])
-    #     arr1.remove(arr1[0])
+    while i < len(arr1):
+        arr[k] = arr1[i]
+        i += 1
+        k += 1
+    while j < len(arr2):
+        arr[k] = arr2[j]
+        j += 1
+        k += 1
     
-    # while len(arr1) != 0:
-    #     sortedSubArr.append(arr1[0])
-    #     arr1.remove(arr1[0])
-    # while len(arr2) != 0:
-    #     sortedSubArr.append(arr2[0])
-    #     arr2.remove(arr2[0])
+    print('Resultado ----------------------------')
+    print(arr)
+    
 
-    # print(f'Arreglo ordenado {sortedSubArr}')
-    
 
 mergeSort(arr)
