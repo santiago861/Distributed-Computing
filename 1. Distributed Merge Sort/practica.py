@@ -78,7 +78,7 @@ class Tree:
 env = simpy.Environment()
 
 # Random Array
-arr = [random.randint(0, 1000) for _ in range(8)]
+arr = [random.randint(0, 1000) for _ in range(16)]
 
 # Tree instantiation and process initialization
 arbol = Tree(env, arr)
