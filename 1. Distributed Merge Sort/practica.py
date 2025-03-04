@@ -7,9 +7,6 @@ class Node:
         self.value = value # Node value (arr)
         self.children = 0 # Number of Node's childrens (int) = expected messages
         self.parent = None # Node's parent (arr)
-        self.received_merged_message = set()
-    
-
 
 class Tree: 
     def __init__(self, env, root_value = None):
@@ -42,18 +39,19 @@ class Tree:
             leftNode.children, rightNode.children = 0, 0
 
         print('------------------------------------------------------------------------------')
-        print(f'Environment: {self.env.now} - Splitting {node.value} -> {leftNode.value} & {rightNode.value}')
+        print(f'Environment Time: {self.env.now} - Splitting {node.value} -> {leftNode.value} & {rightNode.value}')
 
         yield env.timeout(1)
-        # para los procesos de abajo no usamos yield porque queremos que comiencen al mismo tiempo
+        # para los procesos de abajo no usamos yield porque queremos que comiencen al mismo tiempo y uno no espere al otro para comenzar
         left_process = self.env.process(self.generateNodes(leftNode))
         right_process = self.env.process(self.generateNodes(rightNode))
-        yield simpy.AllOf(self.env, [left_process, right_process]) # esperamos a que ambos procesos hayan terminado antes de continuar con la ejecución del código
+        yield left_process & right_process # esperamos a que ambos procesos hayan terminado antes de continuar con la ejecución del código
 
-        yield env.timeout(1)
         merged_message = self.merge_messages(leftNode.value, rightNode.value)
         node.value = merged_message
-        print(f'Environment: {self.env.now} - Merged Message: {merged_message}')
+        print('------------------------------------------------------------------------------')
+        print(f'Environment Time: {self.env.now} - Merging: {leftNode.value} & {rightNode.value} -> {merged_message}')
+        yield env.timeout(1)
 
 
     def merge_messages(self, message1, message2):
@@ -87,9 +85,4 @@ arbol = Tree(env, arr)
 env.process(arbol.generateNodes(arbol.root_value))
 
 # Simulation Execution
-env.run(until=8)
-
-
-
-
-
+env.run()
